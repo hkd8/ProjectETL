@@ -1,0 +1,14 @@
+Data Cleaning:
+1. population_by_zip is 3MB over recommended size for git. Possible cleaning of zips we do not need?
+2. Cleaning DataSets to what we need. Only prominent columns would be ZIP, POPULATION, FRANCHISE_NAME, TYPE_OF_FRANCHISE, STATE, CITY (discuss whats needed).
+
+Data Sources:
+1. Population data = Kaggle https://www.kaggle.com/census/census-bureau-usa
+2. Restaurant data = Kaggle https://www.kaggle.com/datafiniti/fast-food-restaurants#FastFoodRestaurants.csv
+
+Data Merging:
+1. From census --> restaurant; merge on ZIP
+
+MISC:
+1. Finding sales data? Not necessarily needed, but extra time if permitting.
+2. If sales data can be found, would need a merge based on franchise_name (don't know options yet)
