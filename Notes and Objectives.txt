@@ -12,3 +12,12 @@ Data Merging:
 MISC:
 1. Finding sales data? Not necessarily needed, but extra time if permitting.
 2. If sales data can be found, would need a merge based on franchise_name (don't know options yet)
+
+EXPERIMENT LOG:
+-DataTypes in DFs are different. Restaurant has zipcode type as Object. Population has zipcode type as INT64.
+	- Issues from this, restaurant zipcode have zips with '-'. Because of this, the DataType can NOT be converted to INT64.
+	- DataType must be a text based due to the dash. I have converted the population DF to an object instead to properly merge.
+-Finding a proper way to merge has been the biggest obstacle. I've attempted numerous merges so far; none working.
+	- 'pd.merge(cleaned_population, cleaned_restaurant, on='zipcode', how='inner')' = Blank DF? Unknown reason.
+-Easier way to merge may be found in MySQL; have not explored those options. 
+-Have hashed out setting the index as the zip. May come back to this option if a merging option without is not found.
