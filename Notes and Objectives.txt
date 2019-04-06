@@ -1,23 +1,41 @@
-Data Cleaning:
-1. population_by_zip is 3MB over recommended size for git. Possible cleaning of zips we do not need?
-2. Cleaning DataSets to what we need. Only prominent columns would be ZIP, POPULATION, FRANCHISE_NAME, TYPE_OF_FRANCHISE, STATE, CITY (discuss whats needed).
+Extract:
+	Data Sources:
+		1. Population data = Kaggle https://www.kaggle.com/census/census-bureau-usa
+		2. Restaurant data = Kaggle https://www.kaggle.com/datafiniti/fast-food-restaurants#FastFoodRestaurants.csv
+	Format: 
+		- All CSV files
 
-Data Sources:
-1. Population data = Kaggle https://www.kaggle.com/census/census-bureau-usa
-2. Restaurant data = Kaggle https://www.kaggle.com/datafiniti/fast-food-restaurants#FastFoodRestaurants.csv
+Transform: 
+	Cleaning:
+		1. Our first obstacle of cleaning came from the data type format of both CSV files. The two CSV files had two seperate data types within. First DF had 
+		datatypes of Object; whereas the second DF had the datatype of INT64. Merging was not possible with two seperate datatypes.
+			SOLUTION: We changed the datatype of one dataframe to a STR format. The reason we chose STR format were the scope of the data. Our data primarily consisted
+				  of numbers. However, some entries had the '-' character (IE, 58392-292). Because of this '-' character, we had to treat the data as a text.
+		2. Our second obstacle was differing column names at the column we wanted to merge on (IE, zipcode VS postal_code)
+			SOLUTION: We changed column 'postal_code' --> zipcode
+		3. Our third obstacle was merging the DFs together.
+			SOLUTION: We used an outer merge on the column we wanted to merge on, in this context we used 'zipcode'
+		4. Our fourth obstacle was our merged DF had too much information. For context, our census data had multiple population counts based on numerous factors.
+		   These factors included population size based on gender, minimum age, and maximum age. Because of this, our DF was inaccurate due to multiple population counts from every zip code.
+			SOLUTION: We cleaned our merged file by filtering out all the rows that were not the total count of population. To be more exact, our file had numerous population counts, but
+				  also contained the TOTAL population count which we desired. For more context of this, please refer to https://www.kaggle.com/census/us-population-by-zip-code/discussion/47697.
+		5. Our fifth obstacle consisted of a general cleaning of dropping columns of information we did not deem neccesarry (IE, gender_demo, minimum_age, maximum_age, geo_id)
+			SOLUTION: We used a general cleaning code in Pandas to pull the columns we needed.
+		6. Our final obstacle was more general cleaning of uneccesary information. Our cleaned merged file still had numerous rows of NAN values. This was due to
+		   certain zipcodes accounted for in the original census file NOT having any restuarants within.
+			SOLUTION: We used a general cleaning code in Pandas which dropped the rows with NAN values.
 
-Data Merging:
-1. From census --> restaurant; merge on ZIP
+Load:
+	MySQL:
+		-We loaded our cleaned DF into MySQL
+			WHY: MySQL rulez.
 
-MISC:
-1. Finding sales data? Not necessarily needed, but extra time if permitting.
-2. If sales data can be found, would need a merge based on franchise_name (don't know options yet)
-
-EXPERIMENT LOG:
--DataTypes in DFs are different. Restaurant has zipcode type as Object. Population has zipcode type as INT64.
-	- Issues from this, restaurant zipcode have zips with '-'. Because of this, the DataType can NOT be converted to INT64.
-	- DataType must be a text based due to the dash. I have converted the population DF to an object instead to properly merge.
--Finding a proper way to merge has been the biggest obstacle. I've attempted numerous merges so far; none working.
-	- 'pd.merge(cleaned_population, cleaned_restaurant, on='zipcode', how='inner')' = Blank DF? Unknown reason.
--Easier way to merge may be found in MySQL; have not explored those options. 
--Have hashed out setting the index as the zip. May come back to this option if a merging option without is not found.
+Why we chose this data to clean and what can be done:
+	The reasoning behind us choosing this dataset is quite large. First of all, we could treat this as an exploratory analysis due to the smaller sample size of the restaurant data at 10000 restaurant data.
+	There is a larger scope that can be obtained through the datafiniti website. With the smaller dataset, we came up with a list of things that could be done with this small sample size;
+		- What chains are most prominent in each state?
+		- Is there a pattern in the locations restaurants choose to franchise at?
+		- Is there a population minimum at where restaurants choose to franchise at?
+		- Are smaller populations being ignored in the context of franchising?
+		- What region of the NA are mostly populated with franchises?
+		- etc.
